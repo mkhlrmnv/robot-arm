@@ -34,11 +34,12 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
         # Detections
-        print(results)
+        # print(results)
 
         # Rendering results
         if results.multi_hand_landmarks:
-            for num, hand in enumerate(results.multi_hand_landmarks):
+            for hand in results.multi_hand_landmarks:
+                print(hand.landmark[0])
                 mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS,
                                           mp_drawing.DrawingSpec(color=(121, 22, 76), thickness=2, circle_radius=4),
                                           mp_drawing.DrawingSpec(color=(250, 44, 250), thickness=2, circle_radius=2),
@@ -48,6 +49,5 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-
 cap.release()
 cv2.destroyAllWindows()
