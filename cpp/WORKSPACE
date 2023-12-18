@@ -1,0 +1,25 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "opencv",
+    build_file_content = """
+load("//third_party:repositories.bzl", "all_content")
+
+all_content()
+""",
+    strip_prefix = "opencv-3.4.10",
+    urls = ["https://github.com/opencv/opencv/archive/3.4.10.tar.gz"],
+)
+
+http_archive(
+    name = "mediapipe",
+    urls = ["https://github.com/google/mediapipe/archive/refs/tags/v0.8.6.tar.gz"],
+    strip_prefix = "mediapipe-0.8.6",
+)
+
+load("@mediapipe//:workspace_config.bzl", "mediapipe_workspace")
+mediapipe_workspace()
+
+# Load mediapipe_deps.bzl directly from the mediapipe repository
+load("@mediapipe//:mediapipe_deps.bzl", "mediapipe_deps")
+mediapipe_deps()
