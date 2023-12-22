@@ -8,12 +8,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Avoid OOM errors by setting GPU Memory Consumption Growth
-""" 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 tf.config.list_physical_devices('GPU')
-"""
 
 # I moved images to test, val and train folders so images is empty,
 # if data is wanted then uncomment
@@ -56,13 +54,15 @@ for idx, image in enumerate(plot_images):
 # plt.show()
 """
 
+
 # Below is code to move right labels to right folders
 # After images were moved to test, train and val folders
 # On first go I had in total 110 pictures and put 70 in train and 15 in val and test
-for folder in ['train', 'test', 'val']:
-    for file in os.listdir(os.path.join('data', folder, 'images')):
-        filename = file.split('.')[0] + '.json'
-        existing_filepath = os.path.join('data', 'labels', filename)
-        if os.path.exists(existing_filepath):
-            new_filepath = os.path.join('data', folder, 'labels', filename)
-            os.replace(existing_filepath, new_filepath)
+def move_labels():
+    for folder in ['train', 'test', 'val']:
+        for file in os.listdir(os.path.join('data', folder, 'images')):
+            filename = file.split('.')[0] + '.json'
+            existing_filepath = os.path.join('data', 'labels', filename)
+            if os.path.exists(existing_filepath):
+                new_filepath = os.path.join('data', folder, 'labels', filename)
+                os.replace(existing_filepath, new_filepath)
