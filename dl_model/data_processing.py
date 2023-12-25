@@ -24,6 +24,8 @@ def limit_gpu():
 images = tf.data.Dataset.list_files('data/images/*.jpg')
 images.as_numpy_iterator().next()
 
+"""
+
 
 # loads that picture
 def load_image(x):
@@ -32,6 +34,7 @@ def load_image(x):
     return img
 
 
+"""
 # shows is as numpy iterator, so as a lot of 3x3 matrixes
 images = images.map(load_image)
 images.as_numpy_iterator().next()
