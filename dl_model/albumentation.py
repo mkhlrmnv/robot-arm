@@ -13,10 +13,9 @@ import tensorflow as tf
 from matplotlib import pyplot as plt
 from data_processing import load_image, limit_gpu
 
-# parameters by whom, program will be changing pictures and
-# Original tutorial had cropping "alb.RandomCrop(width=450, height=450),", but I wanted to drop it
-# to get full screen detection
+# parameters by whom, program will be changing pictures
 augmentor = alb.Compose([
+    alb.RandomCrop(width=1024, height=576),
     alb.HorizontalFlip(p=0.5),
     alb.RandomBrightnessContrast(p=0.2),
     alb.RandomGamma(p=0.2),
@@ -55,13 +54,13 @@ coords = list(np.divide(coords, [1920, 1080, 1920, 1080]))
 # for testing augmenations
 augmented = augmentor(image=img, bboxes=[coords], class_labels=['right_hand'])
 
-# print(augmented)
-# print(augmented['bboxes'][0][2:])
-# print(augmented['bboxes'])
+print(augmented)
+print(augmented['bboxes'][0][2:])
+print(augmented['bboxes'])
 
 cv2.rectangle(augmented['image'],
-              tuple(np.multiply(augmented['bboxes'][0][:2], [1920, 1080]).astype(int)),
-              tuple(np.multiply(augmented['bboxes'][0][2:], [1920, 1080]).astype(int)),
+              tuple(np.multiply(augmented['bboxes'][0][:2], [1024, 576]).astype(int)),
+              tuple(np.multiply(augmented['bboxes'][0][2:], [1024, 576]).astype(int)),
               (255, 0, 0), 2)
 
 plt.imshow(augmented['image'])
@@ -134,15 +133,15 @@ def load_to_tf():
     # for loading images
     train_images = tf.data.Dataset.list_files('aug_data/train/images/*.jpg', shuffle=False)
     train_images = train_images.map(load_image)
-    # train_images = train_images.map(lambda x: tf.image.resize(x, (120, 120)))
+    train_images = train_images.map(lambda x: tf.image.resize(x, (640, 360)))
     train_images = train_images.map(lambda x: x / 255)
     test_images = tf.data.Dataset.list_files('aug_data/test/images/*.jpg', shuffle=False)
     test_images = test_images.map(load_image)
-    # test_images = test_images.map(lambda x: tf.image.resize(x, (120, 120)))
+    test_images = test_images.map(lambda x: tf.image.resize(x, (640, 360)))
     test_images = test_images.map(lambda x: x / 255)
     val_images = tf.data.Dataset.list_files('aug_data/val/images/*.jpg', shuffle=False)
     val_images = val_images.map(load_image)
-    # val_images = val_images.map(lambda x: tf.image.resize(x, (120, 120)))
+    val_images = val_images.map(lambda x: tf.image.resize(x, (640, 360)))
     val_images = val_images.map(lambda x: x / 255)
 
     # for testing
@@ -193,5 +192,6 @@ def load_to_tf():
 
         ax[idx].imshow(sample_image)
 
+    return train, val
 
-load_to_tf()
+# load_to_tf()
