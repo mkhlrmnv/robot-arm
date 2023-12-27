@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, Dense, GlobalMaxPooling2D
 from tensorflow.keras.applications import VGG16
+from data_processing import limit_gpu
 from albumentation import load_to_tf
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
@@ -19,6 +20,7 @@ vgg = VGG16(include_top=False)
 print(vgg.summary())
 """
 
+limit_gpu()
 
 # neural network model
 def build_model():
