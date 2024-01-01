@@ -88,7 +88,7 @@ def albument():
 
             try:
                 # modifies each photo 60 times
-                for x in range(60):
+                for x in range(30):
                     augmented = augmentor(image=img, bboxes=[coords], class_labels=['face'])
                     cv2.imwrite(os.path.join('aug_data', partition, 'images', f'{image.split(".")[0]}.{x}.jpg'),
                                 augmented['image'])
@@ -114,7 +114,7 @@ def albument():
                 print(e)
 
 
-# albument()
+albument()
 
 # function for loading images and their labels into tf dataset
 
@@ -133,15 +133,15 @@ def load_to_tf():
     # for loading images
     train_images = tf.data.Dataset.list_files('aug_data/train/images/*.jpg', shuffle=False)
     train_images = train_images.map(load_image)
-    train_images = train_images.map(lambda x: tf.image.resize(x, (640, 360)))
+    train_images = train_images.map(lambda x: tf.image.resize(x, (256, 144)))
     train_images = train_images.map(lambda x: x / 255)
     test_images = tf.data.Dataset.list_files('aug_data/test/images/*.jpg', shuffle=False)
     test_images = test_images.map(load_image)
-    test_images = test_images.map(lambda x: tf.image.resize(x, (640, 360)))
+    test_images = test_images.map(lambda x: tf.image.resize(x, (256, 144)))
     test_images = test_images.map(lambda x: x / 255)
     val_images = tf.data.Dataset.list_files('aug_data/val/images/*.jpg', shuffle=False)
     val_images = val_images.map(load_image)
-    val_images = val_images.map(lambda x: tf.image.resize(x, (640, 360)))
+    val_images = val_images.map(lambda x: tf.image.resize(x, (256, 144)))
     val_images = val_images.map(lambda x: x / 255)
 
     # for testing
@@ -162,15 +162,15 @@ def load_to_tf():
 
     # for combining
     train = tf.data.Dataset.zip((train_images, train_labels))
-    train = train.shuffle(4200)
+    train = train.shuffle(2100)
     train = train.batch(8)
     train = train.prefetch(4)
     test = tf.data.Dataset.zip((test_images, test_labels))
-    test = test.shuffle(1200)
+    test = test.shuffle(600)
     test = test.batch(8)
     test = test.prefetch(4)
     val = tf.data.Dataset.zip((val_images, val_labels))
-    val = val.shuffle(1140)
+    val = val.shuffle(570)
     val = val.batch(8)
     val = val.prefetch(4)
 
@@ -178,19 +178,19 @@ def load_to_tf():
     # print(train.as_numpy_iterator().next()[1])
 
     # to view
-    data_samples = train.as_numpy_iterator()
-    res = data_samples.next()
-    fig, ax = plt.subplots(ncols=4, figsize=(20, 20))
-    for idx in range(4):
-        sample_image = res[0][idx]
-        sample_coords = res[1][1][idx]
-
-        cv2.rectangle(sample_image,
-                      tuple(np.multiply(sample_coords[:2], [120, 120]).astype(int)),
-                      tuple(np.multiply(sample_coords[2:], [120, 120]).astype(int)),
-                      (255, 0, 0), 2)
-
-        ax[idx].imshow(sample_image)
+    # data_samples = train.as_numpy_iterator()
+    # res = data_samples.next()
+    # fig, ax = plt.subplots(ncols=4, figsize=(20, 20))
+    # for idx in range(4):
+    #     sample_image = res[0][idx]
+    #     sample_coords = res[1][1][idx]
+    #
+    #     cv2.rectangle(sample_image,
+    #                   tuple(np.multiply(sample_coords[:2], [120, 120]).astype(int)),
+    #                   tuple(np.multiply(sample_coords[2:], [120, 120]).astype(int)),
+    #                   (255, 0, 0), 2)
+    #
+    #     ax[idx].imshow(sample_image)
 
     return train, val
 

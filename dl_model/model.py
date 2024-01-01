@@ -5,7 +5,6 @@ from tensorflow.keras.applications import VGG16
 from data_processing import limit_gpu
 from albumentation import load_to_tf
 from matplotlib import pyplot as plt
-from tensorflow.keras.models import load_model
 
 train_val = load_to_tf()
 
@@ -24,7 +23,7 @@ limit_gpu()
 
 # neural network model
 def build_model():
-    input_layer = Input(shape=(640, 360, 3))
+    input_layer = Input(shape=(256, 144, 3))
 
     vgg = VGG16(include_top=False)(input_layer)
 
@@ -131,6 +130,8 @@ model.compile(opt, classloss, regressloss)
 logdir = 'logs'
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
 hist = model.fit(train, epochs=40, validation_data=val, callbacks=[tensorboard_callback])
+
+facetracker.save('facetracker.h5')
 
 # plot training progression
 print(hist.history)
