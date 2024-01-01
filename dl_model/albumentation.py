@@ -88,7 +88,7 @@ def albument():
 
             try:
                 # modifies each photo 60 times
-                for x in range(30):
+                for x in range(60):
                     augmented = augmentor(image=img, bboxes=[coords], class_labels=['face'])
                     cv2.imwrite(os.path.join('aug_data', partition, 'images', f'{image.split(".")[0]}.{x}.jpg'),
                                 augmented['image'])
@@ -162,15 +162,15 @@ def load_to_tf():
 
     # for combining
     train = tf.data.Dataset.zip((train_images, train_labels))
-    train = train.shuffle(2100)
+    train = train.shuffle(4200)
     train = train.batch(8)
     train = train.prefetch(4)
     test = tf.data.Dataset.zip((test_images, test_labels))
-    test = test.shuffle(600)
+    test = test.shuffle(1200)
     test = test.batch(8)
     test = test.prefetch(4)
     val = tf.data.Dataset.zip((val_images, val_labels))
-    val = val.shuffle(570)
+    val = val.shuffle(1140)
     val = val.batch(8)
     val = val.prefetch(4)
 
