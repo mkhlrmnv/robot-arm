@@ -3,7 +3,7 @@ import cv2
 import tensorflow as tf
 import numpy as np
 
-facetracker = load_model('facetracker.h5')
+handtracer = load_model('handtracer.h5')
 
 cap = cv2.VideoCapture(0)
 while cap.isOpened():
@@ -13,7 +13,7 @@ while cap.isOpened():
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     resized = tf.image.resize(rgb, (256, 144))
 
-    yhat = facetracker.predict(np.expand_dims(resized / 255, 0))
+    yhat = handtracer.predict(np.expand_dims(resized / 255, 0))
     print(yhat)
     sample_coords = yhat[1][0]
 

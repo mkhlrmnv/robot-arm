@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Conv2D, Dense, GlobalMaxPooling2D
+from tensorflow.keras.layers import Input, Dense, GlobalMaxPooling2D
 from tensorflow.keras.applications import VGG16
 from data_processing import limit_gpu
 from albumentation import load_to_tf
@@ -21,6 +21,7 @@ print(vgg.summary())
 
 limit_gpu()
 
+
 # neural network model
 def build_model():
     input_layer = Input(shape=(256, 144, 3))
@@ -37,8 +38,8 @@ def build_model():
     regress1 = Dense(2048, activation='relu')(f2)
     regress2 = Dense(4, activation='sigmoid')(regress1)
 
-    facetracker = Model(inputs=input_layer, outputs=[class2, regress2])
-    return facetracker
+    handtracer = Model(inputs=input_layer, outputs=[class2, regress2])
+    return handtracer
 
 
 # for testing build_model()
@@ -53,7 +54,7 @@ print(classes, coords)
 """
 
 # defining training parameters
-facetracker = build_model()
+handtracer = build_model()
 batches_per_epoch = len(train)
 lr_decay = (1. / 0.75 - 1) / batches_per_epoch
 opt = tf.keras.optimizers.legacy.Adam(learning_rate=0.0001, decay=lr_decay)
@@ -80,10 +81,10 @@ regressloss = localization_loss
 
 
 # neural network
-class FaceTracker(Model):
+class HandTracer(Model):
     def __init__(self, eyetracker, **kwargs):
         super().__init__(**kwargs)
-        self.model = eyetracker
+        self.model = handtracer
 
     def compile(self, opt, classloss, localizationloss, **kwargs):
         super().compile(**kwargs)
@@ -123,7 +124,7 @@ class FaceTracker(Model):
         return self.model(X, **kwargs)
 
 
-model = FaceTracker(facetracker)
+model = HandTracer(handtracer)
 model.compile(opt, classloss, regressloss)
 
 # training
@@ -131,7 +132,7 @@ logdir = 'logs'
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
 hist = model.fit(train, epochs=40, validation_data=val, callbacks=[tensorboard_callback])
 
-facetracker.save('facetracker.h5')
+handtracer.save('hadntracer.h5')
 
 # plot training progression
 print(hist.history)
@@ -153,5 +154,3 @@ ax[2].title.set_text('Regression Loss')
 ax[2].legend()
 
 plt.show()
-
-facetracker.save('facetracker.h5')
