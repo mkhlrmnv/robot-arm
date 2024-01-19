@@ -89,7 +89,7 @@ def albument():
             try:
                 # modifies each photo 60 times
                 for x in range(60):
-                    augmented = augmentor(image=img, bboxes=[coords], class_labels=['face'])
+                    augmented = augmentor(image=img, bboxes=[coords], class_labels=['hand'])
                     cv2.imwrite(os.path.join('aug_data', partition, 'images', f'{image.split(".")[0]}.{x}.jpg'),
                                 augmented['image'])
 
