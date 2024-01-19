@@ -63,7 +63,7 @@ for idx, image in enumerate(plot_images):
 
 # Below is code to move right labels to right folders
 # After images were moved to test, train and val folders
-# On first go I had in total 110 pictures and put 70 in train and 15 in val and test
+# On first go I had in total 100 pictures and put 70 in train and 15 in val and test
 def move_labels():
     for folder in ['train', 'test', 'val']:
         for file in os.listdir(os.path.join('data', folder, 'images')):

@@ -12,7 +12,7 @@ import cv2
 IMAGES_PATH = os.path.join('data', 'images')
 
 # How many pictures are taken
-number_images = 10
+number_images = 100
 
 # Let's take some pictures
 cap = cv2.VideoCapture(0)
